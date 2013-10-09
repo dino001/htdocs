@@ -1,0 +1,38 @@
+.rounded-corners {
+     -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.cssDivTone {
+    border:black solid 1px;    
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.cssToneTitle{
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.cssOneWord{
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.cssBullet{
+    margin-right: 5px;
+}
+
+.cssMainOneWord{
+    font-weight: bold;
+}
+
+.cssToneTitle{
+    font-weight: bold;
+}
