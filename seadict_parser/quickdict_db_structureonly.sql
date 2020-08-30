@@ -2,7 +2,8 @@
 SQLyog Ultimate v10.00 Beta1
 MySQL - 5.1.41 : Database - quickdict_db
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -47,6 +48,7 @@ CREATE TABLE `fullword_oneword` (
 
 DROP TABLE IF EXISTS `oneword`;
 
+-- Break down each full word into multiple onewords with pronunciations
 CREATE TABLE `oneword` (
   `oneword_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `word` varchar(10) COLLATE utf8_bin NOT NULL,
