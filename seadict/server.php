@@ -5,17 +5,32 @@ $action = get_post_data("action");
 $result = array();
 $result_code = 0;
 
-if ($action == "search_syllable")
-{
-    $result["data"] = search_syllable();
+switch($action){
+    case "search_syllable":
+        $result["data"] = search_syllable();
+        break;
+    case "get_random_word":
+        $result["data"] = get_random_word(get_post_data("length_min"), get_post_data("length_max"));
+        break;
 }
 
 $result["code"] = $result_code;
 echo json_encode($result);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
+function get_random_word($length_min = 1, $length_max = 4) {
+    global $db;
+    $sql_one_word = "SELECT word, meaning FROM fullword WHERE count_word BETWEEN $length_min AND $length_max ORDER BY RAND() LIMIT 1";
+    $row = $db->getOneRow($sql_one_word);
+    return [
+        'random_word' => $row['word'],
+        'meaning' => $row['meaning'],
+    ];
+}
+
 function search_syllable()
 {
+    global $db;
     $raw_word = get_post_data("word");
     $search_word = get_last_word($raw_word);
     $oneword = new OneWord();
@@ -32,7 +47,6 @@ function search_syllable()
     GROUP BY oneword.`tone`, oneword.`oneword_id`, fullword.`fullword_id`
     ";
     $arrParam = array($oneword->Syllable);
-    global $db;
     $rows = $db->getManyRow($sql_search, $arrParam);
     $data = array();
     foreach($rows as $row)

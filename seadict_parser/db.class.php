@@ -18,18 +18,18 @@ class DBWrapper
 
     private  $_username = null;
     private  $_password = null;
-    
+
     public $test = "test scope not defined";
 
-    
+
     function __construct()
     {
         $this->_connectionStr = $this->_connectionStr = "mysql:dbname=".MYSQL_DATABASE.";host=".MYSQL_SERVERNAME;
         $this->_username = MYSQL_USERNAME;
-        $this->_password = MYSQL_PASSWORD;            
+        $this->_password = MYSQL_PASSWORD;
     }
-    
-    
+
+
     /**
     * Set connection information
     *
@@ -65,20 +65,20 @@ class DBWrapper
         $statement = $this->_query($sql, $params);
         return $statement->rowCount();
     }
-    
+
     public function execute2($sql, $params = array())
     {
         $statement = $this->_query($sql, $params);
-        
+
         //print   $sql;
-        
+
         //fetch the return of the execute
         /*
         $results = array();
         $icounter = 0;
-        
-        do 
-        {                 
+
+        do
+        {
              $results []= $statement->fetchAll();
              $icounter++;
              print ($icounter . "<br/>");
@@ -87,26 +87,26 @@ class DBWrapper
         */
         return  $statement;
     }
-    
+
     /**
     * return the sql phrase for insert and update
-    * 
+    *
     */
     public function makeSQL($fieldName, $fieldValue, $valueType, $isReturnValueOnly = false, $suffixComma = ", ", $replaceValue = null)
     {
         $sql = "";
         if (!isset($fieldValue))
             $fieldValue = "";
-        
+
         $valueType = strtolower($valueType);
-        if ($valueType == "number")    
+        if ($valueType == "number")
         {
             //replace null if not valid number
             if(!is_numeric($fieldValue))
                 $fieldValue = $replaceValue;
-                
+
         }
-        elseif($valueType == "datetime")    
+        elseif($valueType == "datetime")
         {
             //replace null if not valid date time
         }
@@ -120,25 +120,25 @@ class DBWrapper
             if(!is_string($fieldValue))
                 $fieldValue = $replaceValue;
         }
-        
+
         if (!$isReturnValueOnly)
         {
-            
+
             if (!is_null($fieldValue))
                 $sql .= $fieldName . " = '" . $fieldValue . "'";
-            else    
-                $sql .= $fieldName . " = null";                
+            else
+                $sql .= $fieldName . " = null";
         }
         else
         {
             if (!is_null($fieldValue))
                 $sql .= "'" . $fieldValue . "'";
-            else    
-                $sql .= "null"; 
+            else
+                $sql .= "null";
         }
-        
-        $sql .= $suffixComma;       
-        
+
+        $sql .= $suffixComma;
+
         return $sql;
     }
 
@@ -151,7 +151,7 @@ class DBWrapper
     */
     public function getOneValue($sql, $params = array())
     {
-        $statement = $this->_query($sql, $params); 
+        $statement = $this->_query($sql, $params);
         return $statement->fetchColumn(0);
     }
 
@@ -176,14 +176,14 @@ class DBWrapper
     * @return  array   Result rows
     */
     public function getManyRow($sql, $params = array())
-    {        
-        $statement = $this->_query($sql, $params);                
+    {
+        $statement = $this->_query($sql, $params);
         return $statement->fetchAll($this->_fetchMode);
-        
+
     }
 
     public function getLastInsertId($sequenceName = "")
-    {                    
+    {
         if ($this->_pdoObject == null) return false;
         return $this->_pdoObject->lastInsertId($sequenceName);
     }
@@ -191,13 +191,13 @@ class DBWrapper
     public function setFetchMode($fetchMode)
     {
         $this->_connect();
-        $this->_fetchMode = $fetchMode;        
+        $this->_fetchMode = $fetchMode;
     }
 
     /**
     * Return PDO object
     * @return PDO
-    * 
+    *
     */
     public function getPDOObject()
     {
@@ -243,16 +243,16 @@ class DBWrapper
     * @return  PDOStatement
     */
     private function _query($sql, $params = array())
-    {        
+    {
         if($this->_pdoObject == null) {
             $this->_connect();
         }
 
-        $statement = $this->_pdoObject->prepare($sql, $this->_driverOptions);        
+        $statement = $this->_pdoObject->prepare($sql, $this->_driverOptions);
 
         if (! $statement) {
             $errorInfo = $this->_pdoObject->errorInfo();
-            log_error($this->interpolateQuery($sql, $params));
+            error_log($this->interpolateQuery($sql, $params));
             throw new PDOException("Database error [{$errorInfo[0]}]: {$errorInfo[2]}, driver error code is $errorInfo[1]");
         }
 
@@ -260,16 +260,16 @@ class DBWrapper
 
         if ((! $statement->execute($paramsConverted)) || ($statement->errorCode() != '00000')) {
             $errorInfo = $statement->errorInfo();
-            log_error($this->interpolateQuery($sql, $params));
+            error_log($this->interpolateQuery($sql, $params));
             throw new PDOException("Database error [{$errorInfo[0]}]: {$errorInfo[2]}, driver error code is $errorInfo[1]");
         }
 
         return $statement;
     }
-    
+
     /**
     * Replaces any parameter placeholders in a query with the value of that
-    * parameter. Useful for debugging. Assumes anonymous parameters from 
+    * parameter. Useful for debugging. Assumes anonymous parameters from
     * $params are are in the same order as specified in $query
     *
     * @param string $query The sql query with parameter placeholders
@@ -279,8 +279,8 @@ class DBWrapper
     public function interpolateQuery($query, $params) {
         $keys = array();
 
-        $params = (is_array($params) ? ($params) : (array ($params )));                 
-        
+        $params = (is_array($params) ? ($params) : (array ($params )));
+
         # build a regular expression for each parameter
         foreach ($params as $key => $value) {
             if (is_string($key)) {
@@ -306,12 +306,12 @@ class DBWrapper
         //AnLT 2011 12 26: add br to query for easy debugging
         return $query."<br/>";
     }
-    
+
     public function setTestScope($input)
     {
         $this->test = "Test scope: " . $input;
     }
-    
+
     public function printTestScope()
     {
         print "<br/>" . $this->test;

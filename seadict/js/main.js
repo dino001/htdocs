@@ -1,16 +1,19 @@
 var url_ajax = 'server.php';
 
 function search_syllable(){
-    var word = $("#txtSearch").val().trim();    
+    var word = $("#txtSearch").val().trim();
     var inputdata = {
         action:"search_syllable",
         word:word
     }
-    $.post(url_ajax, inputdata,
-    function(ajaxdata){
-        console.log(ajaxdata.data);
-        html_result(ajaxdata);  
-    },'json');    
+    $.post(
+        url_ajax,
+        inputdata,
+        function(ajaxdata){
+            html_result(ajaxdata);
+        },
+        'json'
+    );
 }
 
 /**
@@ -22,7 +25,7 @@ function html_result(ajaxdata)
     var data = ajaxdata.data;
     $("#divResult").empty();
     for(i=0; i<=6; i++)
-    {                
+    {
         if (data.hasOwnProperty(i + ""))
         {
             //Each collection of the same tone
@@ -35,16 +38,16 @@ function html_result(ajaxdata)
                 var divOneWord = $("<div>").appendTo(divWordList);
                 divOneWord.addClass('cssOneWord');
                 $(divOneWord).prepend("<img class='cssBullet' src='image/bullet1.gif' />");
-                divOneWord.append("<span class='cssMainOneWord'>" + keyword + "</span>: ");                
+                divOneWord.append("<span class='cssMainOneWord'>" + keyword + "</span>: ");
                 $.each(arr_word, function(k, arr_fullword){
                     var spanFullWord = $("<span>").appendTo(divOneWord);
                     spanFullWord.addClass('cssFullWord');
-                    spanFullWord.append(arr_fullword.fullword + ", ");                            
+                    spanFullWord.append(arr_fullword.fullword + ", ");
                 });
             });
-            
+
             $(divTone).show();
-        }        
+        }
     }
 }
 
@@ -70,7 +73,7 @@ function map_tone_title(tone)
             break;
         case 5:
             tone_title = "Thanh nặng";
-            break;        
+            break;
     }
     return tone_title;
 }
@@ -78,19 +81,19 @@ function map_tone_title(tone)
 /**
 * Init events and stuff
 */
-$(document).ready(function() {    
+$(document).ready(function() {
     //Prevent form submit
     $("#frmMain").submit(function(e){
         e.preventDefault();
         search_syllable();
-    }); 
-           
+    });
+
     $(document).on("click", ".cssToneTitle", function(event){
         $(this).parent().children(".cssWordList").toggle();
         $(this).parent().children("hr").toggle();
     });
-    
+
     //Set CSS
     $(".cssDivTone").addClass("rounded-corners");
-    $(".cssOneWord").prepend("<img class='cssBullet' src='image/bullet1.gif' />");    
+    $(".cssOneWord").prepend("<img class='cssBullet' src='image/bullet1.gif' />");
 });
